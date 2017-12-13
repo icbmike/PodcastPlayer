@@ -1,9 +1,8 @@
 ﻿using PodcastPlayer.CommandRouter;
-using System;
 
 namespace PodcastPlayer.Commands
 {
-    class ExampleCommand : ICommandRoute
+    public class ExampleCommand : ICommandRoute
     {
         public string Command => "eg";
 

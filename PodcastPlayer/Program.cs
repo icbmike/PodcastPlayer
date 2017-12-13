@@ -9,11 +9,7 @@ namespace PodcastPlayer
         static void Main(string[] args)
         {
             var commandRouter = new CommandRouter.CommandRouter(new ICommandRoute[] {
-                new CompositeCommand("podcasts", new[]
-                {
-                    new ExampleCommand()
-                }),
-                new ExampleCommand()
+                new QueryRssFeedCommand()
             });
 
             var executeHandleCommand = true;

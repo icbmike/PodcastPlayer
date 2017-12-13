@@ -2,7 +2,7 @@
 
 namespace PodcastPlayer.CommandRouter
 {
-    internal class CommandResult
+    public class CommandResult
     {
         public CommandResult(bool shouldContinue, string message = null)
         {
