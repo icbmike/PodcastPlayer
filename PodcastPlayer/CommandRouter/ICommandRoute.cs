@@ -1,4 +1,4 @@
-﻿namespace PodcastPlayer
+﻿namespace PodcastPlayer.CommandRouter
 {
     internal interface ICommandRoute
     {
@@ -6,6 +6,6 @@
 
         string HelpText { get; }
 
-        void Action(string commandText);
+        CommandResult Action(string commandText);
     }
 }

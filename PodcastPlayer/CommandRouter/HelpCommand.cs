@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
-namespace PodcastPlayer
+namespace PodcastPlayer.CommandRouter
 {
     internal class HelpCommand : ICommandRoute
     {
@@ -16,14 +17,10 @@ namespace PodcastPlayer
 
         public string Command => "help";
 
-        public void Action(string commandText)
+        public CommandResult Action(string commandText)
         {
-            Console.WriteLine("Commands available:");
-
-            foreach(var command in _otherCommands)
-            {
-                Console.WriteLine($"{command.Command} - {command.HelpText}");
-            }
+            return new CommandResult(true, "Commands available: \n" +
+                string.Join("\n", _otherCommands.Select(command => $"{command.Command} - {command.HelpText}")));
         }
     }
 }

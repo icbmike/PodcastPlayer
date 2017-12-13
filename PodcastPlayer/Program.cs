@@ -1,4 +1,6 @@
-﻿using System;
+﻿using PodcastPlayer.CommandRouter;
+using PodcastPlayer.Commands;
+using System;
 
 namespace PodcastPlayer
 {
@@ -6,8 +8,8 @@ namespace PodcastPlayer
     {
         static void Main(string[] args)
         {
-            var commandRouter = new CommandRouter(new ICommandRoute[] {
-                new CompositeCommandRoute("podcasts", new[]
+            var commandRouter = new CommandRouter.CommandRouter(new ICommandRoute[] {
+                new CompositeCommand("podcasts", new[]
                 {
                     new ExampleCommand()
                 }),
@@ -18,7 +20,15 @@ namespace PodcastPlayer
             while (executeHandleCommand)
             {
                 Console.Write("PodcastPlayer> ");
-                executeHandleCommand = commandRouter.HandleCommand(Console.ReadLine());
+
+                var result = commandRouter.HandleCommand(Console.ReadLine());
+                executeHandleCommand = result.ShouldContinue;
+
+                if (result.HasMessage)
+                {
+                    Console.WriteLine(result.Message);
+                }
+
                 Console.WriteLine();
             }
         }

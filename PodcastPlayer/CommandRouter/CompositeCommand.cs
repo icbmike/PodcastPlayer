@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace PodcastPlayer
+namespace PodcastPlayer.CommandRouter
 {
-    class CompositeCommandRoute : ICommandRoute
+    internal class CompositeCommand : ICommandRoute
     {
         private string _command;
         private CommandRouter _router;
 
-        public CompositeCommandRoute(string commandName, IEnumerable<ICommandRoute> subCommands)
+        public CompositeCommand(string commandName, IEnumerable<ICommandRoute> subCommands)
         {
             _command = commandName;
             _router = new CommandRouter(subCommands);
@@ -18,9 +17,9 @@ namespace PodcastPlayer
 
         public string HelpText => $"Run '{Command} help' to see help text for this set of commands.";
 
-        public void Action(string commandText)
+        public CommandResult Action(string commandText)
         {
-            _router.HandleCommand(commandText.ReplaceFirst(_command, "").Trim());
+            return _router.HandleCommand(commandText.ReplaceFirst(_command, "").Trim());
         }
     }
 }

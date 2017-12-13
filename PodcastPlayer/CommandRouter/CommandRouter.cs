@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace PodcastPlayer
+namespace PodcastPlayer.CommandRouter
 {
     internal class CommandRouter
     {
@@ -13,28 +13,26 @@ namespace PodcastPlayer
             _routes = routes.Concat(new[] { new HelpCommand(routes) });
         }
 
-        internal bool HandleCommand(string commandText)
+        internal CommandResult HandleCommand(string commandText)
         {
             var commandParts = commandText.Split(" ", StringSplitOptions.RemoveEmptyEntries);
             var firstCommandPart = commandParts.FirstOrDefault();
 
             if (firstCommandPart == "exit")
             {
-                return false;
+                return new CommandResult(false);
             }
 
             var commandToExecute = _routes.FirstOrDefault(route => route.Command == firstCommandPart);
 
             if (commandToExecute != null)
             {
-                commandToExecute.Action(commandText);
+                return commandToExecute.Action(commandText);
             }
             else
             {
-                Console.WriteLine($"No command matched '{firstCommandPart}'. Use the 'help' command to see available commands or 'exit' to quit.");
+                return new CommandResult(true, $"No command matched '{firstCommandPart}'. Use the 'help' command to see available commands or 'exit' to quit.");
             }
-
-            return true;
         }
     }
 }
