@@ -1,14 +1,15 @@
-﻿using PodcastPlayer.CommandRouter;
+﻿using System.Threading.Tasks;
+using PodcastPlayer.CommandRouter;
 
 namespace PodcastPlayer.Commands
 {
-    public class ExampleCommand : ICommandRoute
+    public class ExampleCommand : ICommand
     {
         public string Command => "eg";
 
         public string HelpText => "Some example help text";
 
-        public CommandResult Action(string commandText)
+        public async Task<CommandResult> Action(string commandText)
         {
             return new CommandResult(true, $"Your command was '{commandText}'");
         }

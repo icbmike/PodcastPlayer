@@ -1,19 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace PodcastPlayer.CommandRouter
 {
-    internal class CommandRouter
+    public class CommandRouter
     {
-        private readonly IEnumerable<ICommandRoute> _routes;
+        private readonly Dictionary<string, Type> _commands;
+        private readonly IServiceProvider _serviceProvider;
 
-        public CommandRouter(IEnumerable<ICommandRoute> routes)
+        public CommandRouter(IServiceProvider serviceProvider, Dictionary<string, Type> commands)
         {
-            _routes = routes.Concat(new[] { new HelpCommand(routes) });
+            _serviceProvider = serviceProvider;
+            _commands = commands;
         }
 
-        internal CommandResult HandleCommand(string commandText)
+        public async Task<CommandResult> HandleCommand(string commandText)
         {
             var commandParts = commandText.Split(" ", StringSplitOptions.RemoveEmptyEntries);
             var firstCommandPart = commandParts.FirstOrDefault();
@@ -23,11 +26,10 @@ namespace PodcastPlayer.CommandRouter
                 return new CommandResult(false);
             }
 
-            var commandToExecute = _routes.FirstOrDefault(route => route.Command == firstCommandPart);
+            if(_commands.TryGetValue(firstCommandPart, out var commandType)) {
+                var commandToExecute = (ICommand)_serviceProvider.GetService(commandType);
 
-            if (commandToExecute != null)
-            {
-                return commandToExecute.Action(commandText);
+                return await commandToExecute.Action(commandText);
             }
             else
             {

@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace PodcastPlayer.CommandRouter
 {
-    internal class HelpCommand : ICommandRoute
+    internal class HelpCommand : ICommand
     {
-        private readonly IEnumerable<ICommandRoute> _otherCommands;
+        private readonly Dictionary<string, ICommand> _otherCommands;
 
-        public HelpCommand(IEnumerable<ICommandRoute> otherCommands)
+        public HelpCommand(Dictionary<string, ICommand> otherCommands)
         {
             _otherCommands = otherCommands;
         }
@@ -17,10 +18,14 @@ namespace PodcastPlayer.CommandRouter
 
         public string Command => "help";
 
-        public CommandResult Action(string commandText)
+        public Task<CommandResult> Action(string commandText)
         {
-            return new CommandResult(true, "Commands available: \n" +
-                string.Join("\n", _otherCommands.Select(command => $"{command.Command} - {command.HelpText}")));
+            return Task.FromResult(
+                new CommandResult(
+                    true, 
+                    "Commands available: \n" + string.Join("\n", _otherCommands.Select(command => $"{command.Key} - {command.Value.HelpText}"))
+                )
+            );
         }
     }
 }

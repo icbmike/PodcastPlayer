@@ -1,6 +1,7 @@
-﻿using PodcastPlayer.CommandRouter;
+﻿using System;
+using Microsoft.Extensions.DependencyInjection;
+using PodcastPlayer.CommandRouter;
 using PodcastPlayer.Commands;
-using System;
 
 namespace PodcastPlayer
 {
@@ -8,16 +9,21 @@ namespace PodcastPlayer
     {
         static void Main(string[] args)
         {
-            var commandRouter = new CommandRouter.CommandRouter(new ICommandRoute[] {
-                new QueryRssFeedCommand()
-            });
+            var services = new ServiceCollection();
+            ConfigureServices(services);
+            var serviceProvider = services.BuildServiceProvider();
 
+            UseCommandRouter(serviceProvider.GetService<CommandRouter.CommandRouter>());
+        }
+
+        private static void UseCommandRouter(CommandRouter.CommandRouter commandRouter)
+        {
             var executeHandleCommand = true;
             while (executeHandleCommand)
             {
                 Console.Write("PodcastPlayer> ");
 
-                var result = commandRouter.HandleCommand(Console.ReadLine());
+                var result = commandRouter.HandleCommand(Console.ReadLine()).Result;
                 executeHandleCommand = result.ShouldContinue;
 
                 if (result.HasMessage)
@@ -27,6 +33,19 @@ namespace PodcastPlayer
 
                 Console.WriteLine();
             }
+        }
+
+        private static void ConfigureServices(IServiceCollection services)
+        {
+            services.AddTransient<IRssService, RssService>();
+
+            services.AddCommandRouting(builder =>
+            {
+                builder.AddHelp();
+                builder.RegisterRoute<QueryRssFeedCommand>("rss");
+
+                return builder.Build();
+            });
         }
     }
 }
