@@ -37,15 +37,14 @@ namespace PodcastPlayer
 
         private static void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<IRssService, RssService>();
-
             services.AddCommandRouting(builder =>
             {
-                builder.AddHelp();
-                builder.RegisterRoute<QueryRssFeedCommand>("rss");
-
-                return builder.Build();
+                return builder
+                    .AddHelp()
+                    .RegisterRoute<QueryRssFeedCommand>("rss");
             });
+
+            services.AddTransient<IRssService, RssService>();
         }
     }
 }

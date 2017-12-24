@@ -5,13 +5,11 @@ namespace PodcastPlayer.CommandRouter
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddCommandRouting(this IServiceCollection serviceCollection, Func<CommandRouterBuilder, CommandRouter> builderFunc)
+        public static IServiceCollection AddCommandRouting(this IServiceCollection serviceCollection, Func<CommandRouterBuilder, CommandRouterBuilder> builderFunc)
         {
-            var builder = new CommandRouterBuilder(serviceCollection);
+            var builder = builderFunc(new CommandRouterBuilder(serviceCollection));
 
-            var commandRouter = builderFunc(builder);
-
-            serviceCollection.AddSingleton(commandRouter);
+            serviceCollection.AddSingleton((arg) => builder.Build());
 
             return serviceCollection;
         }

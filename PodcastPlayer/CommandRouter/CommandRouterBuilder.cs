@@ -16,15 +16,17 @@ namespace PodcastPlayer.CommandRouter
             _commands = new Dictionary<string, Type>();
         }
 
-        public void RegisterRoute<TCommand>(string command) where TCommand : class, ICommand
+        public CommandRouterBuilder RegisterRoute<TCommand>(string command) where TCommand : class, ICommand
         {
             var commandType = typeof(TCommand);
 
             _commands.Add(command, commandType);
             _serviceCollection.AddTransient(commandType);
+
+            return this;
         }
 
-        public void AddHelp(string helpCommand = "help"){
+        public CommandRouterBuilder AddHelp(string helpCommand = "help"){
             _commands.Add(helpCommand, typeof(HelpCommand));
 
             _serviceCollection.AddTransient(serviceProvider => {
@@ -35,6 +37,8 @@ namespace PodcastPlayer.CommandRouter
                 
                 return new HelpCommand(commandsDict);
             });
+
+            return this;
         }
 
         public CommandRouter Build()
