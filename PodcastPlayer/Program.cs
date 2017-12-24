@@ -24,6 +24,7 @@ namespace PodcastPlayer
                 Console.Write("PodcastPlayer> ");
 
                 var result = commandRouter.HandleCommand(Console.ReadLine()).Result;
+
                 executeHandleCommand = result.ShouldContinue;
 
                 if (result.HasMessage)

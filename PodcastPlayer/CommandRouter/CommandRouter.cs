@@ -29,7 +29,13 @@ namespace PodcastPlayer.CommandRouter
                 var restOfCommand = string.Join(" ", commandParts.Skip(1));
                 var commandToExecute = commandProvider(restOfCommand);
 
-                return await commandToExecute.Action(restOfCommand);
+                try
+                {
+                    return await commandToExecute.Action(restOfCommand);
+                }
+                catch (Exception e){
+                    return new CommandResult(false, e.Message);
+                }
             }
             else
             {
