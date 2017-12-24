@@ -19,8 +19,8 @@ namespace PodcastPlayer.Commands
         {
             var commandParts = commandText.Split(" ", System.StringSplitOptions.RemoveEmptyEntries);
 
-            return commandParts.Length == 2
-                ? await FetchRssFeed(commandParts[1])
+            return commandParts.Length == 1
+                ? await FetchRssFeed(commandParts[0])
                 : new CommandResult(true, "Incorrect number of arguments");
         }
 

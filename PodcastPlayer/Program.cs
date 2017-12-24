@@ -41,7 +41,13 @@ namespace PodcastPlayer
             {
                 return builder
                     .AddHelp()
-                    .RegisterRoute<QueryRssFeedCommand>("rss");
+                    .RegisterCompositeRoute("rss", rssBuilder =>
+                        rssBuilder
+                            .AddHelp()
+                            .RegisterRoute<QueryRssFeedCommand>("list")
+                            .RegisterRoute<SaveRssFeedCommand>("save")
+                    );
+
             });
 
             services.AddTransient<IRssService, RssService>();

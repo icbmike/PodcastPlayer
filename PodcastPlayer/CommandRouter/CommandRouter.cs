@@ -7,29 +7,29 @@ namespace PodcastPlayer.CommandRouter
 {
     public class CommandRouter
     {
-        private readonly Dictionary<string, Type> _commands;
-        private readonly IServiceProvider _serviceProvider;
+        private readonly Dictionary<string, Func<string, ICommand>> _commands;
 
-        public CommandRouter(IServiceProvider serviceProvider, Dictionary<string, Type> commands)
+
+        public CommandRouter(Dictionary<string, Func<string, ICommand>> commands)
         {
-            _serviceProvider = serviceProvider;
             _commands = commands;
         }
 
         public async Task<CommandResult> HandleCommand(string commandText)
         {
             var commandParts = commandText.Split(" ", StringSplitOptions.RemoveEmptyEntries);
-            var firstCommandPart = commandParts.FirstOrDefault();
+            var firstCommandPart = commandParts.FirstOrDefault() ?? "";
 
             if (firstCommandPart == "exit")
             {
                 return new CommandResult(false);
             }
 
-            if(_commands.TryGetValue(firstCommandPart, out var commandType)) {
-                var commandToExecute = (ICommand)_serviceProvider.GetService(commandType);
+            if(_commands.TryGetValue(firstCommandPart, out var commandProvider)) {
+                var restOfCommand = string.Join(" ", commandParts.Skip(1));
+                var commandToExecute = commandProvider(restOfCommand);
 
-                return await commandToExecute.Action(commandText);
+                return await commandToExecute.Action(restOfCommand);
             }
             else
             {

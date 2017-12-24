@@ -8,9 +8,10 @@ namespace PodcastPlayer.CommandRouter
         private string _command;
         private CommandRouter _router;
 
-        public CompositeCommand(string commandName, IEnumerable<ICommand> subCommands)
+        public CompositeCommand(string command, CommandRouter router)
         {
-            _command = commandName;
+            _command = command;
+            _router = router;
         }
 
         public string Command => _command;
@@ -19,7 +20,7 @@ namespace PodcastPlayer.CommandRouter
 
         public async Task<CommandResult> Action(string commandText)
         {
-            return await _router.HandleCommand(commandText.ReplaceFirst(_command, "").Trim());
+            return await _router.HandleCommand(commandText);
         }
     }
 }
