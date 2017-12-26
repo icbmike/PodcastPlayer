@@ -18,7 +18,7 @@ namespace PodcastPlayer.CommandRouter
 
         public string Command => "help";
 
-        public Task<CommandResult> Action(string commandText)
+        public Task<CommandResult> ActionAsync(string commandText)
         {
             return Task.FromResult(
                 new CommandResult(

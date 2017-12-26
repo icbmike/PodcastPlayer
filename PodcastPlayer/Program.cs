@@ -47,11 +47,19 @@ namespace PodcastPlayer
                             .AddHelp()
                             .RegisterRoute<QueryRssFeedCommand>("list")
                             .RegisterRoute<SaveRssFeedCommand>("save")
+                    )
+                    .RegisterCompositeRoute("feeds", feedsBuilder =>
+                        feedsBuilder
+                            .AddHelp()
+                            .RegisterRoute<ListItemsInSavedFeedCommand>("list")
                     );
 
             });
 
             services.AddTransient<IRssService, RssService>();
+            services.AddTransient<IStore<string, Feed>>(p => {
+                return new JsonFileStore<Feed>("feeds.json", feed => feed.Name);
+            });
         }
     }
 }

@@ -10,9 +10,16 @@ namespace PodcastPlayer.Commands
 {
     public class SaveRssFeedCommand : ICommand
     {
+        readonly IStore<string, Feed> _feedStore;
+
+        public SaveRssFeedCommand(IStore<string, Feed> feedStore)
+        {
+            _feedStore = feedStore;
+        }
+
         public string HelpText => "Pass a url to an rss feed. Will save it.";
 
-        public async Task<CommandResult> Action(string commandText)
+        public async Task<CommandResult> ActionAsync(string commandText)
         {
             var args = commandText.Split(" ", StringSplitOptions.RemoveEmptyEntries);
 
@@ -23,24 +30,12 @@ namespace PodcastPlayer.Commands
 
         private async Task<CommandResult> SaveFeed(string feedName, string feedUrl)
         {
-            await FileExtensions.CreateIfNotExists("feeds.json", "[]");
-
-            var feedsJson = await File.ReadAllTextAsync("feeds.json");
-
-            var feeds = JsonConvert.DeserializeObject<List<Feed>>(feedsJson)
-                .ToDictionary(feed => feed.Name);
-
-            feeds[feedName] = new Feed
-            {
+            var savedFeed = await _feedStore.SaveAsync(feedName, new Feed(){
                 Name = feedName,
                 Url = feedUrl
-            };
+            });
 
-            var newFeedsJson = JsonConvert.SerializeObject(feeds.Values.ToList());
-
-            await File.WriteAllTextAsync("feeds.json", newFeedsJson);
-
-            return new CommandResult(true, $"Feed '{feedName}' saved");
+            return new CommandResult(true, $"Feed '{savedFeed.Name}' saved");
         }
     }
 }

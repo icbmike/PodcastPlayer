@@ -6,6 +6,6 @@ namespace PodcastPlayer.CommandRouter
     {
         string HelpText { get; }
 
-        Task<CommandResult> Action(string commandText);
+        Task<CommandResult> ActionAsync(string commandText);
     }
 }

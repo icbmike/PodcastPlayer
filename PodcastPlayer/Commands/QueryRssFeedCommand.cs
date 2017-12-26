@@ -15,7 +15,7 @@ namespace PodcastPlayer.Commands
 
         public string HelpText => "Pass a url for an rss feed";
 
-        public async Task<CommandResult> Action(string commandText)
+        public async Task<CommandResult> ActionAsync(string commandText)
         {
             var commandParts = commandText.Split(" ", System.StringSplitOptions.RemoveEmptyEntries);
 

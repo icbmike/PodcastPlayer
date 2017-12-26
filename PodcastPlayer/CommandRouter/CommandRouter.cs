@@ -9,7 +9,6 @@ namespace PodcastPlayer.CommandRouter
     {
         private readonly Dictionary<string, Func<string, ICommand>> _commands;
 
-
         public CommandRouter(Dictionary<string, Func<string, ICommand>> commands)
         {
             _commands = commands;
@@ -31,7 +30,7 @@ namespace PodcastPlayer.CommandRouter
 
                 try
                 {
-                    return await commandToExecute.Action(restOfCommand);
+                    return await commandToExecute.ActionAsync(restOfCommand);
                 }
                 catch (Exception e){
                     return new CommandResult(false, e.Message);

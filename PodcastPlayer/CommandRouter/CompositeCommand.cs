@@ -18,7 +18,7 @@ namespace PodcastPlayer.CommandRouter
 
         public string HelpText => $"Run '{Command} help' to see help text for this set of commands.";
 
-        public async Task<CommandResult> Action(string commandText)
+        public async Task<CommandResult> ActionAsync(string commandText)
         {
             return await _router.HandleCommand(commandText);
         }
